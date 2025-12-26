@@ -1,0 +1,18 @@
+apiVersion: v2
+name: myapp
+description: A monitoring-driven Flask application deployed with Helm, Prometheus Operator & ArgoCD
+type: application
+
+version: 0.1.0              # Helm chart version (chart release)
+appVersion: "v1"            # Application version (container/app release)
+
+maintainers:
+  - name: Devang Kubde
+    email: devang@example.com
+
+keywords:
+  - flask
+  - monitoring
+  - prometheus
+  - argocd
+  - gitops

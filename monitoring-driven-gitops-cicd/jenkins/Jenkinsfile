@@ -1,0 +1,40 @@
+pipeline {
+  agent any
+
+  stages {
+
+    stage("Build & Push") {
+      steps {
+        sh "docker build -t devang/myapp:${BUILD_NUMBER} ."
+        sh "docker push devang/myapp:${BUILD_NUMBER}"
+      }
+    }
+
+    stage("Update Helm Values") {
+      steps {
+        sh """
+        yq e '.image.tag = "${BUILD_NUMBER}"' -i helm/myapp/values.yaml
+        yq e '.app.version = "v${BUILD_NUMBER}"' -i helm/myapp/values.yaml
+        git commit -am "Deploy v${BUILD_NUMBER}"
+        git push
+        """
+      }
+    }
+
+    stage("Metric Validation") {
+      steps {
+        sleep 180
+        sh """
+        ERROR_RATE=$(curl -s http://prometheus/api/v1/query \
+        --data-urlencode 'query=sum(rate(http_requests_total{status="500"}[2m])) / sum(rate(http_requests_total[2m]))' \
+        | jq '.data.result[0].value[1]')
+
+        if (( $(echo "$ERROR_RATE > 0.01" | bc -l) )); then
+          echo "Deployment failed due to high error rate"
+          exit 1
+        fi
+        """
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+image:
+  repository: devang/myapp
+  tag: v1
+
+app:
+  name: myapp
+  version: v1
+
+replicaCount: 2
+
+service:
+  port: 80
+  targetPort: 5000

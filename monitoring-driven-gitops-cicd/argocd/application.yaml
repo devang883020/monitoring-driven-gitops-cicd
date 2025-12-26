@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+spec:
+  source:
+    repoURL: https://github.com/devang/monitoring-driven-gitops-cicd
+    path: helm/myapp
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    automated:
+      selfHeal: true
