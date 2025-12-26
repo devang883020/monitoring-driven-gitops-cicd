@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+data:
+  datasources.yaml: |
+    <PASTE DATASOURCE YAML HERE>
+  dashboards.yaml: |
+    <PASTE DASHBOARD PROVIDER YAML HERE>

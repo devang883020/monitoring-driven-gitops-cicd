@@ -1,0 +1,20 @@
+adminUser: admin
+adminPassword: admin
+
+service:
+  type: ClusterIP
+
+sidecar:
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+    folder: /var/lib/grafana/dashboards
+
+extraVolumeMounts:
+  - name: grafana-provisioning
+    mountPath: /etc/grafana/provisioning
+
+extraVolumes:
+  - name: grafana-provisioning
+    configMap:
+      name: grafana-provisioning

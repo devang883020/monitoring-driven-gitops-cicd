@@ -4,7 +4,7 @@ metadata:
   name: myapp
 spec:
   source:
-    repoURL: https://github.com/devang/monitoring-driven-gitops-cicd
+    repoURL: https://github.com/devang883020/monitoring-driven-gitops-cicd.git
     path: helm/myapp
   destination:
     server: https://kubernetes.default.svc

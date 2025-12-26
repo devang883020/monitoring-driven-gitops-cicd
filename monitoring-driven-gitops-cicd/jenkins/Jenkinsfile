@@ -5,8 +5,8 @@ pipeline {
 
     stage("Build & Push") {
       steps {
-        sh "docker build -t devang/myapp:${BUILD_NUMBER} ."
-        sh "docker push devang/myapp:${BUILD_NUMBER}"
+        sh "docker build -t devangkubde88/myapp:${BUILD_NUMBER} ."
+        sh "docker push devangkubde88/myapp:${BUILD_NUMBER}"
       }
     }
 

@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: main
+spec:
+  serviceMonitorSelector:
+    matchLabels:
+      team: devops
+  ruleSelector:
+    matchLabels:
+      role: alert-rules
