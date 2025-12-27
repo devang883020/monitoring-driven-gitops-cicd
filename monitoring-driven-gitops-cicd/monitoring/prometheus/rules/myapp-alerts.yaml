@@ -2,33 +2,36 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: myapp-alerts
+  namespace: monitoring
   labels:
-    role: alert-rules
+    release: kube-prometheus-stack
 spec:
   groups:
   - name: myapp.rules
     rules:
 
-    - alert: HighErrorRate
+    - alert: MyAppHighCPU
       expr: |
-        sum(rate(http_requests_total{status="500"}[2m]))
-        /
-        sum(rate(http_requests_total[2m])) > 0.01
+        sum(rate(container_cpu_usage_seconds_total{
+          namespace="myapp",
+          pod=~"myapp-.*"
+        }[2m])) > 0.8
       for: 2m
       labels:
-        severity: critical
-
-    - alert: HighLatency
-      expr: |
-        histogram_quantile(
-          0.95,
-          sum(rate(http_request_duration_seconds_bucket[2m])) by (le)
-        ) > 1
-      for: 3m
-      labels:
         severity: warning
+      annotations:
+        summary: "High CPU usage in myapp"
+        description: "CPU usage > 80% for more than 2 minutes"
 
-    - alert: PodCrashLoop
-      expr: rate(kube_pod_container_status_restarts_total[5m]) > 3
+    - alert: MyAppPodCrashLoop
+      expr: |
+        increase(kube_pod_container_status_restarts_total{
+          namespace="myapp",
+          pod=~"myapp-.*"
+        }[5m]) > 0
+      for: 1m
       labels:
         severity: critical
+      annotations:
+        summary: "myapp pod restarting"
+        description: "Pod restarted in last 5 minutes"
