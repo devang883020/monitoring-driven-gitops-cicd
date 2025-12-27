@@ -1,10 +1,20 @@
-apiVersion: monitoring.coreos.com/v1
-kind: Alertmanager
-metadata:
-  name: main
-  namespace: monitoring
-spec:
-  replicas: 1
-  alertmanagerConfigSelector:
-    matchLabels:
-      alertmanager: main
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "slack-notifications"
+  group_wait: 30s
+  group_interval: 2m
+  repeat_interval: 4h
+
+receivers:
+- name: "slack-notifications"
+  slack_configs:
+  - api_url: "__SLACK_WEBHOOK_URL__"
+    channel: "#all-new-workspace"
+    title: "{{ .CommonAnnotations.summary }}"
+    text: >-
+      {{ range .Alerts }}
+      *Alert:* {{ .Annotations.description }}
+      *Severity:* {{ .Labels.severity }}
+      {{ end }}
